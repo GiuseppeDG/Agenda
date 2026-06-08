@@ -27,6 +27,72 @@
   --r: 16px;
 }
 
+/* ======= TEMA GRIGIO ======= */
+body.grey {
+  --bg: #c8c4bc;
+  --card: #d4d0c8;
+  --card2: #dedad2;
+  --border: #b8b4ac;
+  --text: #2a2820;
+  --muted: #6a6660;
+  --lavoro-bg: rgba(255,183,3,0.15);
+  --salute-bg: rgba(6,214,160,0.15);
+  --personale-bg: rgba(255,107,157,0.15);
+  --svago-bg: rgba(167,139,250,0.15);
+}
+
+body.grey {
+  background: linear-gradient(145deg, #ccc8c0 0%, #bfbbb2 40%, #c8c4bc 70%, #d0ccc4 100%) !important;
+  background-attachment: fixed !important;
+}
+
+/* ======= TEMA CHIARO ======= */
+body.light {
+  --bg: #f0f0f8;
+  --card: #ffffff;
+  --card2: #f5f4fe;
+  --border: #dddaf5;
+  --text: #1c1836;
+  --muted: #8a87aa;
+  --lavoro-bg: rgba(255,183,3,0.13);
+  --salute-bg: rgba(6,214,160,0.13);
+  --personale-bg: rgba(255,107,157,0.13);
+  --svago-bg: rgba(167,139,250,0.13);
+}
+
+/* Toggle tema - 3 stati */
+.theme-toggle {
+  background: var(--card2);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  width: 62px; height: 24px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+.theme-toggle::after {
+  content: '';
+  position: absolute;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a78bfa, #ff6b9d);
+  top: 2px; left: 2px;
+  transition: transform 0.3s;
+}
+body.grey .theme-toggle::after {
+  transform: translateX(20px);
+  background: linear-gradient(135deg, #8a87aa, #a78bfa);
+}
+body.light .theme-toggle::after {
+  transform: translateX(40px);
+  background: linear-gradient(135deg, #ffb703, #ff6b9d);
+}
+.theme-label {
+  font-size: 0.85rem; font-weight: 700;
+  color: var(--muted); white-space: nowrap;
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
 body {
@@ -422,7 +488,13 @@ textarea.finput { resize: none; height: 68px; }
 <div class="header">
   <div class="header-top">
     <div class="logo">AGENDA</div>
-    <div class="today-pill" id="today-pill"></div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="today-pill" id="today-pill"></div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span class="theme-label" id="theme-label">🌙</span>
+        <button class="theme-toggle" id="theme-toggle" onclick="toggleTema()"></button>
+      </div>
+    </div>
   </div>
   <div class="search-wrap">
     <span class="search-icon">🔍</span>
@@ -939,6 +1011,29 @@ function renderLista(){
   });
   return h;
 }
+
+// ===== TEMA =====
+const TEMI = ['dark', 'grey', 'light'];
+const TEMA_LABEL = { dark: '🌙', grey: '🌫️', light: '☀️' };
+let temaCorrente = localStorage.getItem('tema') || 'dark';
+
+function applicaTema(t) {
+  document.body.classList.remove('light', 'grey');
+  if(t === 'light') document.body.classList.add('light');
+  if(t === 'grey')  document.body.classList.add('grey');
+  document.getElementById('theme-label').textContent = TEMA_LABEL[t];
+  localStorage.setItem('tema', t);
+  temaCorrente = t;
+}
+
+function toggleTema() {
+  const idx = TEMI.indexOf(temaCorrente);
+  const next = TEMI[(idx + 1) % TEMI.length];
+  applicaTema(next);
+}
+
+// Ripristina tema salvato
+applicaTema(temaCorrente);
 
 if('Notification' in window&&Notification.permission==='default') Notification.requestPermission();
 apps.forEach(a=>programmaReminder(a));
