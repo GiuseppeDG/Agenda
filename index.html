@@ -636,7 +636,7 @@ const oggi = new Date(); oggi.setHours(0,0,0,0);
 document.getElementById('f-data').value = toYMD(new Date());
 document.getElementById('today-pill').textContent = new Date().toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'});
 
-function toYMD(d) { return d.toISOString().split('T')[0]; }
+function toYMD(d) { const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${dd}`; }
 function pDate(s) { const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
 function sameDay(a,b) { return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate(); }
 function saveLS() { localStorage.setItem('agenda_v4', JSON.stringify(apps)); }
